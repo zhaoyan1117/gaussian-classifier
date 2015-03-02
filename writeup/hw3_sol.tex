@@ -1,0 +1,435 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,relsize}
+\usepackage{graphicx, float}
+\usepackage{caption, subcaption}
+
+\addtolength{\evensidemargin}{-.5in}
+\addtolength{\oddsidemargin}{-.5in}
+\addtolength{\textwidth}{0.8in}
+\addtolength{\textheight}{0.8in}
+\addtolength{\topmargin}{-.4in}
+\newtheoremstyle{quest}{\topsep}{\topsep}{}{}{\bfseries}{}{ }{\thmname{#1}\thmnote{ #3}.}
+\theoremstyle{quest}
+\newtheorem*{definition}{Definition}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{question}{Problem}
+\newtheorem*{exercise}{Exercise}
+\newtheorem*{challengeproblem}{Challenge Problem}
+\newcommand{\name}{%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% put your name here, so we know who to give credit to %%
+CS189: Introduction to Machine Learning
+}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\hw}{%%%%%%%%%%%%%%%%%%%%
+%% and which homework assignment is it? %%%%%%%%%
+%% put the correct number below              %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+3
+}
+\newcommand{\duedate}{Due date: }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{\vspace{-50pt}
+\huge \name
+\\\vspace{10pt}
+\Large Homework \hw
+\\\vspace{10pt}
+\large Due: March 1st, 2015 at 11:59pm}
+\date{}
+\author{}
+
+\markright{\name\hfill Homework \hw\hfill}
+
+%% If you want to define a new command, you can do it like this:
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+
+%% If you want to use a function like ''sin'' or ''cos'', you can do it like this
+%% (we probably won't have much use for this)
+% \DeclareMathOperator{\sin}{sin}   %% just an example (it's already defined)
+
+\newcommand{\figdir}{../figures/}
+
+\begin{document}
+\maketitle
+
+\begin{picture}(0,0)
+\put(-20,180){
+\textbf{Name: Yan Zhao} \hspace{6cm}
+\textbf{Student ID: 23044191}
+}
+\end{picture}
+\vspace{-50pt}
+
+
+%%%%%%%%%%%%%%
+% Question 1 %
+%%%%%%%%%%%%%%
+\begin{question}[1]
+\textbf{Visualizing Eigenvectors of Gaussian Covariance Matrix}
+\end{question}
+\vspace{12pt}
+\textbf{Solution:}
+\begin{itemize}
+\item[(a)]
+The mean of the sampled data is: $\begin{bmatrix} 9.30090944 & -0.81156373 \end{bmatrix}$.\\
+\item[(b)]
+The covariance matrix of the sampled data is:\\
+\[
+\begin{bmatrix}
+9.30090944 & -0.81156373\\
+-0.81156373 & 5.74641572\\
+\end{bmatrix}
+\]\\
+\item[(c)]
+The eigenvalues of this covariacne matrix is: 9.47743894 and 5.56988621,
+and the corresponding eigenvectors is $\begin{bmatrix} 0.97715071 \\ -0.21254761 \end{bmatrix}$ and $\begin{bmatrix} 0.21254761 \\ 0.97715071 \end{bmatrix}$.\\
+\item[(d)]
+Here is the plot of the data points and eigenvectors.
+\begin{figure}[H]
+\centering
+\includegraphics[width=120mm]{\figdir p1_original.png}
+\end{figure}
+\item[(e)]
+Here is the plot of transformed data points, we can see the gradient direction is aligned to the axises
+now since the new bases are the eigenvectors.
+\begin{figure}[H]
+\centering
+\includegraphics[width=120mm]{\figdir p1_transformed.png}
+\end{figure}
+\end{itemize}
+\newpage
+
+%%%%%%%%%%%%%%
+% Question 2 %
+%%%%%%%%%%%%%%
+\begin{question}[2]
+\textbf{Covariance Matrix and Decomposition}
+\end{question}
+\begin{itemize}
+\item[(a)]
+$\Sigma^{-1}$ does not exist when $\Sigma$ is degenerate. More specificall, some random variables in \textbf{X} have variance 0 -- such that these random variables' pdfs are just mass points at the means. We can remove those zero variance r.v. from \textbf{X} to get a new random variable vector \textbf{X'}, which will have a non-degenerate covariance matrix. Notice we are not losing any information here since the reduced r.v. only have fixed values.\\
+Furthermore, some of the eigenvalues of the original covariance matrix $\Sigma$ are 0s since it is an singular matrix. Geometrically, this means hyper ellipsoid has 0 volumn in n-dimensional space, where n is the number of columns of $\Sigma$.
+\item[(b)]
+Given $\Sigma$, the covariance matrix of the given zero multi-variable gaussian r.v., is non-degenerate, symmetric, and positive definite matrix(if it is not, we can fix it with technique discussed in part (a)). There exists matrix U, a full rank orthogonal matrix containing of the eigenvectors of $\Sigma$ as its columns, and matrix $\Lambda$, a diagonal matrix containing $\Sigma$'s eigenvalues such that:\\ $\Sigma = U\Lambda U^{T}$
+Taken further,
+\begin{align*}
+\Sigma &= U\Lambda U^{T}\\
+       &= U\Lambda^{\frac{1}{2}}(\Lambda^{\frac{1}{2}})^{T}U^{T}\\
+       &= U\Lambda^{\frac{1}{2}}(U\Lambda^{\frac{1}{2}})^{T}\\
+       &= BB^{T}
+\end{align*}
+Thus, we can rewrite the density of given r.v. as
+\begin{align*}
+p(x;\mu,\Sigma) &= \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}} e^{-\frac{1}{2}(x-\mu)^{T}\Sigma^{-1}(x-\mu)}\\
+&= \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}} e^{-\frac{1}{2}x^{T}\Sigma^{-1}x}\\
+&= \frac{1}{(2\pi)^{\frac{n}{2}}|BB^{T}|^{\frac{1}{2}}} e^{-\frac{1}{2}x^{T}B^{-T}B^{-1}x}
+\end{align*}
+Using the \"change-of-variable\" formula, let $Z = B^{-1}X$, we will have another multi-variable gaussian r.v. with density function
+\begin{align*}
+p(z) = \frac{1}{(2\pi)^{\frac{n}{2}}}e^{-\frac{1}{2}z^{T}z}
+\end{align*}
+Thus, Z has mean 0 and covariance $I$.\\
+We can find here $A = B^{-1}$, and $\lVert Ax\rVert_{2}^{2} = z^{T}z$ becuase r.v. Z is just a X being transformed to 0 mean and $I$ covariance.
+\item[(c)]
+Geometrically, transforming $x^{T}\Sigma^{-1}x$ into $\lVert Ax\rVert^{2}_{2}$ means transforming the non-axis aligned and non-unit-length ellipsoid (isocontours of X) to a axis aligned and unit-length sphere (isocontours of Z).
+\item[(d)]
+Since $x^{T}\Sigma^{-1}x = \lVert Ax\rVert_2^2$, we just need to find the maximum and minimum value of $x^{T}\Sigma^{-1}x$.\\
+Decompose $\Sigma^{-1}$ with spectral theorem to the eigenvector and eigenvalue matrix talked above:
+\begin{align*}
+x^{T}\Sigma^{-1}x &= x^{T}U\Lambda^-1 U^{T}x\\
+                  &= z^{T}\Lambda^-1 z
+\end{align*}
+Because U is an orthogonal matrix, so z will have the same length as x. Then,
+\begin{align*}
+x^{T}\Sigma^{-1}x &= z^{T}\Lambda^-1 z\\
+									&= \sum_{i=1}^{n} z_i^2\frac{1}{\lambda_i}
+\end{align*}
+And we need to maximize or minimize the above equation with constraint
+\begin{align*}
+\lVert x\rVert_2 &= 1\\
+\lVert z\rVert_2 &= 1\\
+\sum_{i}^{n} z_i^2 &= 1
+\end{align*}
+So the maximum value of $\lVert Ax\rVert_2^2$ is the maximum value among the reciprocal of all $\Sigma$'s eigenvalues, and the minimum value is the minimum among the reciprocal of all $\Sigma$'s eigenvalues.
+\\\\
+Intuitively, we can have isocontours of the hyper plane centered at origin and a radii 1 hyper sphere at origin. Then the maximum value happens when x points to the direction of the eigenvector with the samllest eigenvalue, and the minimum value happens when x points to the direction of the eigenvector with the largest eigenvalue.
+If $X_i \perp X_j \forall_{i,j}$, then these isocontours are just axis-aligned, since $\Sigma$ is a diagonal matrix already.
+\\\\
+To maximize the probability of f(x), we should minimize $x^{T}\Sigma^{-1}x$; thus, we should choose x such that the vector x pointing to the same direction as the eigenvector with the \textbf{largest} eigenvalue of $\Sigma$ matrix.
+\end{itemize}
+\newpage
+
+%%%%%%%%%%%%%%
+% Question 3 %
+%%%%%%%%%%%%%%
+\begin{question}[3]
+\textbf{Isocontours of Normal Distributions}
+\end{question}
+\begin{itemize}
+\item[(a)]
+$f(\mu, \Sigma), \mu = \begin{bmatrix}1 \\ 1\end{bmatrix}, \Sigma = \begin{bmatrix}2 & 0 \\ 0 & 1\end{bmatrix}$
+\begin{figure}[H]
+\centering
+\includegraphics[width=112mm]{\figdir p3_a.png}
+\end{figure}
+
+\item[(b)]
+$f(\mu, \Sigma), \mu = \begin{bmatrix}-1 \\ 2\end{bmatrix}, \Sigma = \begin{bmatrix}3 & 1 \\ 1 & 2\end{bmatrix}$
+\begin{figure}[H]
+\centering
+\includegraphics[width=112mm]{\figdir p3_b.png}
+\end{figure}
+
+\item[(c)]
+$f(\mu_1, \Sigma_1) - f(\mu_2, \Sigma_2), \mu_1 = \begin{bmatrix}0 \\ 2\end{bmatrix}, \mu_2 = \begin{bmatrix}2 \\ 0\end{bmatrix}, \Sigma_1 = \Sigma_2 = \begin{bmatrix}1 & 1 \\ 1 & 2\end{bmatrix}$
+\begin{figure}[H]
+\centering
+\includegraphics[width=112mm]{\figdir p3_c.png}
+\end{figure}
+
+\item[(d)]
+$f(\mu_1, \Sigma_1) - f(\mu_2, \Sigma_2), \mu_1 = \begin{bmatrix}0 \\ 2\end{bmatrix}, \mu_2 = \begin{bmatrix}2 \\ 0\end{bmatrix}, \Sigma_1 = \begin{bmatrix}1 & 1 \\ 1 & 2\end{bmatrix}, \Sigma_2 = \begin{bmatrix}3 & 1 \\ 1 & 2\end{bmatrix}$
+\begin{figure}[H]
+\centering
+\includegraphics[width=112mm]{\figdir p3_d.png}
+\end{figure}
+
+\item[(e)]
+$f(\mu_1, \Sigma_1) - f(\mu_2, \Sigma_2), \mu_1 = \begin{bmatrix}1 \\ 1\end{bmatrix}, \mu_2 = \begin{bmatrix}-1 \\ -1\end{bmatrix}, \Sigma_1 = \begin{bmatrix}1 & 0 \\ 0 & 2\end{bmatrix}, \Sigma_2 = \begin{bmatrix}2 & 1 \\ 1 & 2\end{bmatrix}$
+\begin{figure}[H]
+\centering
+\includegraphics[width=112mm]{\figdir p3_e.png}
+\end{figure}
+\end{itemize}
+\newpage
+
+%%%%%%%%%%%%%%
+% Question 4 %
+%%%%%%%%%%%%%%
+\begin{question}[4]
+\textbf{Gaussian Classifiers for Digits}
+\end{question}
+\begin{itemize}
+\item[(a)]
+The MLE for the mean is just a the mean of the sampled data, and the MLE for the covariance matrix is just the covariance matrix of the sampled data.\\\\
+The estimator of mean is \textbf{unbiased}. We have a random variable $X ~ \mathcal{N}(\mu, \Sigma)$, and the bias of estimator $\hat{\mu}$ is:
+\begin{align*}
+E[\hat{\mu}] &= E[\frac{1}{n}\sum_{i=1}^{n}X_i]\\
+	 				   &= \frac{1}{n}\sum_{i=1}^{n}E[X_i]\\
+	 				   &= \frac{1}{n}(n\mu)\\
+	 				   &= \mu
+\end{align*}
+\\
+The estimator of covariance matrix is \textbf{biased}.
+\item[(b)]
+The prior of each class can be modeled by calculating the number of appearances of each class in the training set over the total size of the data size, such that:
+\begin{align*}
+P_{prior} = \frac{\mbox{number of appearance in training set}}{\mbox{total size of training set}}
+\end{align*}
+\item[(c)]
+Here are the heatmap of the covariance matrices of digit 0 and 6.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.0\textwidth]{\figdir p4_heatmap_0.png}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=1.0\textwidth]{\figdir p4_heatmap_6.png}
+\end{subfigure}
+\end{figure}
+We can find that most of the values in the covariance matrix are 0, and small blocks of values have higher values are distributed in the middle of the graph in a square blocked fashion.\\
+The reason most of the surrounding areas are 0 is the surrounding pixel around the 28 by 28 digit images mostly stay 0. So their variance is actually 0, and this leads to the 0 surrounding region in the covariance matrix.\\
+As for the small blocks having higher values, this is due to pixels next to each other tend to have higher correlation.\\
+Also, we can find the clustered regions are different between different classes; this is also reasonable since different digits occupied different region of 28 by 28 pixels.
+\item[(d)]
+	\begin{itemize}
+	\item[(i)]
+	The decision boundary is a hyper plane in higer dimension space because $\Sigma = \Sigma_{overall}$ is the same for every class.
+	\item[(ii)]
+	The decision boundary is a curved surface in higer dimension space because $\Sigma_{i}$ is different for every class.
+	\item[(iii)]
+	Here are plots of correction rate between classifiers using $\Sigma_{overall}$ and $\Sigma_{i}$.
+	\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=1.0\textwidth]{\figdir p4_accuracy_sigmai.png}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+	  \centering
+	  \includegraphics[width=1.0\textwidth]{\figdir p4_accuracy_sigma_overall.png}
+	\end{subfigure}
+	\end{figure}
+	Clearly, we can find classifier using different $\Sigma$ for each class has a better performance. The reason is that the feature vector
+	cannot be separated with a hyper plane in high dimension space, and we need a curved surface to separate the data.
+	\end{itemize}
+\end{itemize}
+\newpage
+
+%%%%%%%%%%%%%%
+% Question 5 %
+%%%%%%%%%%%%%%
+\begin{question}[5]
+\textbf{Centering and Ridge Regression}
+\end{question}
+Let's expand $J(\textbf{w}, \omega_0)$:
+\begin{align*}
+J(\textbf{w}, \omega_0) &= (\textbf{y} - \textbf{X}\textbf{w} - \omega_{0}\textbf{1})^{T}(\textbf{y} - \textbf{X}\textbf{w} - \omega_{0}\textbf{1})+\lambda\textbf{w}^{T}\textbf{w}\\
+ 										&= (\textbf{y}^{T} - \textbf{w}^{T}\textbf{X}^{T} - \textbf{1}^{T}\omega_{0})^{T}(\textbf{y} - \textbf{X}\textbf{w} - \omega_{0}\textbf{1})+\lambda\textbf{w}^{T}\textbf{w}\\
+										&= \textbf{y}^{T}\textbf{y} - \textbf{y}^{T}\textbf{Xw} - \textbf{y}^{T}\omega_{0}\textbf{1}\\
+										&\quad - \textbf{w}^{T}\textbf{X}^{T}\textbf{y} + \textbf{w}^{T}\textbf{X}^{T}\textbf{X}\textbf{w} + \textbf{w}^{T}\textbf{X}^{T}\omega_0\textbf{1} \\
+                    &\quad - \textbf{1}^{T}\omega_{0}\textbf{y} + \textbf{1}^{T}\omega_{0}\textbf{Xw} + n\omega_{0}^{2} + \lambda\textbf{w}^{T}\textbf{w}
+\end{align*}
+We can calculate $\frac{\partial J(\textbf{w}, \omega_0)}{\partial \omega_{0}}$:
+\begin{align*}
+\frac{\partial J(\textbf{w}, \omega_0)}{\partial \omega_{0}} &= -\textbf{y}^{T}\textbf{1} + \textbf{w}^{T}\textbf{X}^{T} -\textbf{1}^{T}\textbf{y} + \textbf{X}\textbf{w} + 2n\omega_{0}\\
+&= -2\textbf{y}^{T}\textbf{1} + 2\textbf{Xw} + 2n\omega_{0}\\
+&= -2\sum_{i=1}^{n}y_i + 2(\sum_{i=1}^{n}\textbf{x}_i)^{T}\textbf{w} + 2n\omega_{0}\\
+\end{align*}
+And we can solve $\hat{\omega_{0}}$ by let $\frac{\partial J(\textbf{w}, \omega_0)}{\partial \omega_{0}}$ to be 0:
+\begin{align*}
+0 &= -2\sum_{i=1}^{n}y_i + (\sum_{i=1}^{n}\textbf{x}_i)^{T}\textbf{w} + 2n\hat{\omega}_{0}\\
+\hat{\omega}_{0} &= \frac{1}{n}\sum_{i=1}^{n}y_i - (\frac{1}{n}\sum_{i=1}^{n}\textbf{x}_i)^{T}\textbf{w}\\
+\hat{\omega}_{0} &= \bar{y}
+\end{align*}
+We can calculate $\frac{\partial J(\textbf{w}, \omega_0)}{\partial \textbf{w}}$:
+\begin{align*}
+\frac{\partial J(\textbf{w}, \omega_0)}{\partial \omega_{0}} &= -\textbf{y}^{T}\textbf{X} - \textbf{X}^{T}\textbf{y} + 2\textbf{X}^{T}\textbf{X}\textbf{w} + \textbf{X}^{T}\omega_{0}\textbf{1} + \textbf{1}^{T}\omega_{0}\textbf{X} + 2\lambda\textbf{w}\\
+&= 2(\textbf{X}^{T}\textbf{X} + \lambda\textbf{I})\textbf{w} - 2\textbf{X}^{T}\textbf{y} + \omega_{0}(\sum_{i=1}^{n}\textbf{x}_{i}) + \omega_{0}(\sum_{i=1}^{n}\textbf{x}_{i})^{T} \\
+&= 2(\textbf{X}^{T}\textbf{X} + \lambda\textbf{I})\textbf{w} - 2\textbf{X}^{T}\textbf{y}
+\end{align*}
+And we can solve $\hat{\textbf{w}}$ by let $\frac{\partial J(\textbf{w}, \omega_0)}{\partial \textbf{w}}$ to be 0:
+\begin{align*}
+0 &= 2(\textbf{X}^{T}\textbf{X} + \lambda\textbf{I})\hat{\textbf{w}} - 2\textbf{X}^{T}\textbf{y}\\
+\hat{\textbf{w}} &= (\textbf{X}^{T}\textbf{X} + \lambda\textbf{I})^{-1}\textbf{X}^{T}\textbf{y}
+\end{align*}
+\newpage
+
+%%%%%%%%%%%%%%
+% Question 6 %
+%%%%%%%%%%%%%%
+\begin{question}[6]
+\textbf{MLE For Simple Linear Regression}
+\end{question}
+Because $P_{y_i|x_i}\sim\mathcal{N}(\omega_0 + \omega_{1}x_i, \sigma^2)$, we just need to use MLE find the optimal $\omega_0$ and $\omega_1$.
+\\\\
+Thus, the log likehood is:
+\begin{align*}
+l(\omega_0, \omega_1) &= log \Bigg(\prod_{i=1}^{n}\Bigg(\frac{1}{(2\pi\sigma^2)^{\frac{1}{2}}}e^{-\frac{y_i - \omega_0 - \omega_1 x_i}{2\sigma^2}}\Bigg)\Bigg)\\
+&= -\frac{n}{2}log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(y_i - \omega_0 - \omega_1 x_i)^2
+\end{align*}
+Let $g(\omega_0, \omega_1) = \sum_{i=1}^{n}(y_i - \omega_0 - \omega_1 x_i)^2$ since that's the part that involves $\omega_0$ and $\omega_1$, and we want to minimize $g(\omega_0, \omega_1)$.
+Thus,
+\begin{align*}
+\frac{\partial g(\omega_0, \omega_1)}{\partial \omega_0} &= -2\sum_{i=1}^{n}(y_i - \omega_0 - \omega_1 x_i)
+\end{align*}
+Let $\frac{\partial g(\omega_0, \omega_1)}{\partial \omega_0} = 0$,
+\begin{align*}
+-2\sum_{i=1}^{n}(y_i - \omega_0 - \omega_1 x_i) &= 0\\
+\sum_{i=1}^{n}y_i - n\omega_0 - \omega_1 \sum_{i=1}^{n}x_i &= 0\\
+n\bar{y} - n\omega_0 - \omega_{1}n\bar{x} &= 0 \\
+\omega_0 &= \bar{y} - \omega_{1}\bar{x}
+\end{align*}
+For $\omega_1$,
+\begin{align*}
+\frac{\partial g(\omega_0, \omega_1)}{\partial \omega_1} &= -2\sum_{i=1}^{n}(x_i(y_i - \omega_0 - \omega_1 x_i))\\
+&= -2 \sum_{i=1}^{n}x_{i}y_{i} + 2\omega_{0}\sum_{i=1}^{n}x_{i} + 2\omega_{1}\sum_{i=1}^{n}x_{i}^{2}
+\end{align*}
+Let $\frac{\partial g(\omega_0, \omega_1)}{\partial \omega_1} = 0$,
+\begin{align*}
+-2 \sum_{i=1}^{n}x_{i}y_{i} + 2\omega_{0}\sum_{i=1}^{n}x_{i} + 2\omega_{1}\sum_{i=1}^{n}x_{i}^{2} &= 0\\
+\sum_{i=1}^{n}x_{i}y_{i} - \omega_{0}\sum_{i=1}^{n}x_{i} - \omega_{1}\sum_{i=1}^{n}x_{i}^{2} &= 0\\
+\sum_{i=1}^{n}x_{i}y_{i} - (\bar{y} - \omega_{1}\bar{x})n\bar{x} - \omega_{1}\sum_{i=1}^{n}x_{i}^{2} &= 0 \\
+\sum_{i=1}^{n}x_{i}y_{i} - n\bar{x}\bar{y} + \omega_{1}(n\bar{x}^2 - \sum_{i=1}^{n}x_{i}^{2}) &= 0\\
+\omega_{1} &= \frac{\sum_{i=1}^{n}x_{i}y_{i} - n\bar{x}\bar{y}}{\sum_{i=1}^{n}x_{i}^{2} - n\bar{x}^2}
+\end{align*}
+
+
+\newpage
+%%%%%%%%%%%%%%
+% Question 7 %
+%%%%%%%%%%%%%%
+\begin{question}[7]
+\textbf{Independence vs. Correlation}
+\end{question}
+Recall that two random variables X and Y are \textbf{independent} iff $P(X, Y) = P(X)P(Y)$ (or $P(X|Y) = P(X)$)  and \textbf{uncorrelated} iff $E(XY) = E(X)E(Y)$.
+\begin{itemize}
+\item[(a)]
+X and Y are NOT independent.\\
+Clearly, we can see that $P(X|Y) \neq P(X)$ since if Y is 0, $P_{X}(0) = 0$, and if Y is not 0, $P_{X}(0) = \frac{1}{2}$.\\
+\\
+X and Y are uncorrelated.\\
+By observation, we can find that the possible values of (X, Y) are (-1, 0), (1, 0), (0, -1), and (0, 1). Thus, $E(XY) = 0$. Also, we can find that:
+\begin{align*}
+E(X) &= P_{X}(0) \times 0 + P_{X}(1) \times 1 + P_{X}(-1) \times -1\\
+&= \frac{1}{2} \times 0 + \frac{1}{4} \times -1 + \frac{1}{4} \times 1\\
+&= 0
+\end{align*}
+Thus,
+\begin{align*}
+E(X)E(Y) = 0 = E(XY)
+\end{align*}
+So X and Y are uncorrelated.
+\item[(b)]
+Here is an enumeration of all the possible events of X, Y, Z, and $B_1$, $B_2$, $B_3$. Notice each row of event has equal possibility becuase $B_1$, $B_2$, $B_3$ are evenly distributed Bernoulli variables.\\
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+X & Y & Z & $B_1$ & $B_2$ & $B_3$ \\
+[0.5ex]
+\hline\hline
+0 & 0 & 0 & 0 & 0 & 0\\
+\hline
+0 & 1 & 1 & 0 & 0 & 1\\
+\hline
+1 & 1 & 0 & 0 & 1 & 0\\
+\hline
+1 & 0 & 1 & 0 & 1 & 1\\
+\hline
+1 & 0 & 1 & 1 & 0 & 0\\
+\hline
+1 & 1 & 0 & 1 & 0 & 1\\
+\hline
+0 & 1 & 1 & 1 & 1 & 0\\
+\hline
+0 & 0 & 0 & 1 & 1 & 1\\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{X, Y, and Z are pairwise independent.}\\
+Without loss of generality, let's focus on X and Y. We can find that $P_{X}(0) = P_{X}(1) = \frac{1}{2}$ and $P_{Y}(0) = P_{Y}(1) = \frac{1}{2}$.
+Also, there are only four events of (X, Y): (0, 0), (1, 1), (1, 0), (0, 1), and each of them has probability $\frac{1}/{4}$.\\
+\textbf{However, X, Y, and Z are not mutually independent.}\\
+In order to be mutually independent, $P_{X,Y,Z}$ must be equal to $P_{X}P_{Y}P_{Z}$. We can find that $P_{X}(1)P_{Y}(1)P_{Z}(1) = \frac{1}{8}$, but $P_{X,Y,Z}(1,1,1) = 0$ since (1,1,1) is an impossible event.
+\end{itemize}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
