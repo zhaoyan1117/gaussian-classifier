@@ -25,7 +25,6 @@ writeup/*.fdb_latexmk
 writeup/*.pdf
 
 submission*
-figures*
 output*
 data*
 
